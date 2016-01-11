@@ -74,7 +74,10 @@ In static/js/services.js, replace the value of YOUR_CLIENT_ID with the client ID
 In client_secrets.json, replace the values of YOUR_CLIENT_ID and YOUR_CLIENT_SECRET with the client ID and client secret that you generated in step 2.
 Run the project by executing the following command on the command line from the directory above your project:
 
+```
 /path/to/appengine/sdk/dev_appserver.py <project directory>
+```
+
 Navigate to http://localhost:8080 to try the app.
 Note: To use additional clients, and enable app activities and interactive posts, you must deploy the PhotoHunt server to Google App Engine.
 Application layout
@@ -226,7 +229,7 @@ def post(self):
   Returns the following JSON response representing the User that was
   connected:
 
-```json
+```javascript
 {
     'id':0,
     'googleUserId':'',
@@ -472,7 +475,7 @@ $scope.start = function() {
 
 You can see all of the options that are provided to the gapi.interactivepost.render() method and importantly the contentUrl property. This property is important because that is the URL where Google crawls to create a share snippet for the Google+ stream such as the title for the page and the thumbnail to use. In this case, Google is directed to crawl invite.html which renders a simple page containing the metadata for the invite interactive post. If a user browses to that URL directly, the app redirects them to the index page by setting the window.location.href property using JavaScript. When Google crawls the invite.html page for metadata to display in the interactive post, the crawler will not execute JavaScript and so will not be redirected.
 
-```markup
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -539,7 +542,7 @@ def get(self):
 
 Next, a button is added to each photo that PhotoHunt lists, allowing Alice to promote photos. This addition is done in an AngularJS partial, which is located in the static/partials/photo.html file.
 
-```markup
+```html
 <button class="button">Promote</button>
 ```
 
