@@ -57,8 +57,12 @@ Click Create a new Client ID — a dialog box appears.
 Register the origins from which your app is allowed to access the Google APIs, as follows. An origin is a unique combination of protocol, hostname, and port.
 In the Application type section of the dialog, select Web application.
 In the Authorized JavaScript origins field, enter the origin for your app. You can enter multiple origins to allow for your app to run on different protocols, domains, or subdomains. Wildcards are not allowed. In the example below, the second URL could be a production URL.
+
+```
 http://localhost:8080
 https://myproductionurl.example.com
+```
+
 In the Authorized redirect URI field, delete the default value. Redirect URIs are not used with JavaScript APIs.
 Click the Create Client ID button.
 In the resulting Client ID for web application section, copy the Client ID and Client secret that your app will need to use to access the APIs.
@@ -147,7 +151,7 @@ Visitors who are not signed in see the Google+ Sign-In button in the top-right o
 
 First, an HTML element is added to static/index.html that represents the sign-in button. PhotoHunt uses the standard Google+ Sign-In button rather than rendering a custom button.
 
-```markup
+```html
 <span id="signin" ng-show="immediateFailed">
   <span id="myGsignin"></span>
 </span>
@@ -313,6 +317,7 @@ def post(self):
 
 As the comments for the method state, the post() method takes the token data given by the Google+ Sign-In button callback, and upgrades the attached authorization code into a fully-qualified access token and refresh token pair. This token data is specific to Alice. Then, this token pair is stored along with the User object that represents Alice in our datastore. If your app has an existing Facebook or Twitter sign-in integration, this is the point at which you would create the relevant new fields that are mentioned in model.User, including:
 
+```
 google_user_id
 google_display_name
 google_public_profile_url
@@ -321,6 +326,8 @@ google_access_token
 google_refresh_token
 google_expires_in
 google_expires_at
+```
+
 post() has only set the google_user_id, google_access_token, google_refresh_token, google_expires_in, and google_expires_at fields for Alice. The display name, public profile URL, and public profile photo URL will be set later when the app uses the Google+ APIs to personalize PhotoHunt for Alice.
 
 After the token is stored, the app sets Alice's ID in her session so that the app can use the ID in future requests. The manner in which you would do cross-request user identification in a real application varies, but this is one way.

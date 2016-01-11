@@ -74,7 +74,10 @@ In static/js/services.js, replace the value of YOUR_CLIENT_ID with the client ID
 In client_secrets.json, replace the values of YOUR_CLIENT_ID and YOUR_CLIENT_SECRET with the client ID and client secret that you generated in step 2.
 Run the project by executing the following command on the command line from the directory above your project:
 
+```
 /path/to/appengine/sdk/dev_appserver.py <project directory>
+```
+
 Navigate to http://localhost:8080 to try the app.
 Note: To use additional clients, and enable app activities and interactive posts, you must deploy the PhotoHunt server to Google App Engine.
 Application layout
@@ -144,7 +147,7 @@ Visitors who are not signed in see the Google+ Sign-In button in the top-right o
 
 First, an HTML element is added to static/index.html that represents the sign-in button. PhotoHunt uses the standard Google+ Sign-In button rather than rendering a custom button.
 
-```markup
+```html
 <span id="signin" ng-show="immediateFailed">
   <span id="myGsignin"></span>
 </span>
@@ -226,7 +229,7 @@ def post(self):
   Returns the following JSON response representing the User that was
   connected:
 
-```json
+```javascript
 {
     'id':0,
     'googleUserId':'',
@@ -539,7 +542,7 @@ def get(self):
 
 Next, a button is added to each photo that PhotoHunt lists, allowing Alice to promote photos. This addition is done in an AngularJS partial, which is located in the static/partials/photo.html file.
 
-```markup
+```html
 <button class="button">Promote</button>
 ```
 
