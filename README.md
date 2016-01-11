@@ -545,7 +545,7 @@ Next, a button is added to each photo that PhotoHunt lists, allowing Alice to pr
 
 Similarly to the invite button, the promote button is made useful with JavaScript, but this time it is made so using an AngularJS directive while rendering the static/partials/photo.html partial for each photo that is listed on the page. The relevant JavaScript is in the static/js/directives.js file.
 
-```
+```javascript
 angular.module('photoHunt.directives', ['photoHunt.services'])
     .directive('photo', function(Conf, PhotoHuntApi) {
       return {

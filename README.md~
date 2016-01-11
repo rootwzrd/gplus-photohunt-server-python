@@ -251,6 +251,8 @@ def post(self):
        IO-related errors occur such as network connectivity loss or local
        file-related errors.
   """
+
+```
   # Only connect a user that is not already connected.
   if self.session.get(self.CURRENT_USER_SESSION_KEY) is not None:
     user = self.get_user_from_session()
@@ -304,6 +306,8 @@ def post(self):
   self.session[self.CURRENT_USER_SESSION_KEY] = token_info.get('user_id')
 
   self.send_success(user)
+```
+
 As the comments for the method state, the post() method takes the token data given by the Google+ Sign-In button callback, and upgrades the attached authorization code into a fully-qualified access token and refresh token pair. This token data is specific to Alice. Then, this token pair is stored along with the User object that represents Alice in our datastore. If your app has an existing Facebook or Twitter sign-in integration, this is the point at which you would create the relevant new fields that are mentioned in model.User, including:
 
 google_user_id
@@ -324,6 +328,7 @@ Over-the-air install
 
 With one line of code, you can enable the over-the-air install feature to prompt your Android users to install your Android app when they sign in to your web app. The following example highlights this parameter:
 
+```
 $scope.renderSignIn = function() {
   gapi.signin.render('myGsignin', {
     // ...
@@ -331,6 +336,8 @@ $scope.renderSignIn = function() {
     // ...
   });
 }
+```
+
 Be sure to replace your.photohunt.android.package.name with the package name for your own Android app.
 
 After adding the apppackagename parameter, the over-the-air install happens automatically if certain conditions are met:
@@ -346,6 +353,7 @@ Her Google+ name, profile photo, and profile link are shown in the PhotoHunt int
 She automatically sees photos from the people that she chose to share with PhotoHunt, who have also chosen to share photos with Alice.
 Alice's name, profile photo, and profile link are retrieved when the /api/connect endpoint is called. This is done as part of the save_token_for_user() method.
 
+```
 def get_user_profile(credentials):
   """Return the public Google+ profile data for the given user."""
   http = httplib2.Http()
@@ -378,10 +386,13 @@ def save_token_for_user(google_user_id, credentials):
   user.google_credentials = credentials
   user.put()
   return user
+```
+
 The relevant lines are those within the if user is None: block. A Google API Python Client instance is created for the Google+ API, and then a call is made to the people.get endpoint of the Google+ API within get_user_profile(), with a user ID of me. In this case, because the client is authorized for Alice, me tells Google+ to return Alice's public profile information.
 
 The last step of the call to /api/connect is to fetch a list of the people that Alice chose to share with PhotoHunt from her Google+ circles. This is done by the get_and_store_friends() method.
 
+```
 def get_and_store_friends(user):
   """Query Google for the list of the user's friends that they've shared with
   our app, and then store those friends for later use.
@@ -409,6 +420,8 @@ def get_and_store_friends(user):
       edge.owner_user_id = user.key().id()
       edge.friend_user_id = friend.key().id()
       edge.put()
+```
+
 This method is meant to highlight how to retrieve a list of people, but not how to do it efficiently for your own application. This method can take a few seconds to run if the user has a large number of people they've chosen to share with PhotoHunt. Because of this issue, we recommend that you fork this process into a thread, task queue, cron job, or some other asynchronous execution mechanism.
 
 The method creates another Google API Python Client instance for Google+, and calls the people.list endpoint while authorized as Alice. This method returns all of the people that Alice has chosen to share with PhotoHunt, which is in paginated form.
@@ -421,11 +434,15 @@ Interactive posts allow Alice to promote her photos that she uploads to PhotoHun
 Important: Interactive posts will not work when PhotoHunt is hosted at http://localhost:8080 because the Google crawler can only access public URLs to get microdata about the content of the post. In the case of PhotoHunt for Python, you can deploy your app to appspot.com as a public Google App Engine app.
 First, a button is added to static/index.html to allow Alice to invite her friends.
 
+```
 <button id="invite" class="button icon add primary" ng-show="themes">
   Invite your friends
 </button>
+```
+
 This invite button is rendered as an interactive post button in the $scope.start function in the static/index.html file. This function runs each time that the index page is loaded:
 
+```
 $scope.start = function() {
   $scope.renderSignIn();
   $scope.checkForHighlightedPhoto();
@@ -451,8 +468,11 @@ $scope.start = function() {
     $scope.getAllPhotos();
   });
 }
+```
+
 You can see all of the options that are provided to the gapi.interactivepost.render() method and importantly the contentUrl property. This property is important because that is the URL where Google crawls to create a share snippet for the Google+ stream such as the title for the page and the thumbnail to use. In this case, Google is directed to crawl invite.html which renders a simple page containing the metadata for the invite interactive post. If a user browses to that URL directly, the app redirects them to the index page by setting the window.location.href property using JavaScript. When Google crawls the invite.html page for metadata to display in the interactive post, the crawler will not execute JavaScript and so will not be redirected.
 
+```
 <!DOCTYPE html>
 <html>
 <head>
@@ -467,8 +487,11 @@ You can see all of the options that are provided to the gapi.interactivepost.ren
   <p itemprop="description">{{description}}</p>
 </body>
 </html>
+```
+
 This file is rendered as a Jinja2 template by SchemaHandler.get():
 
+```
 def get(self):
   """Returns the template at templates/${request.path}.
 
@@ -512,11 +535,17 @@ def get(self):
         }))
   except TypeError as te:
     self.send_error(404, "Resource not found")
+```
+
 Next, a button is added to each photo that PhotoHunt lists, allowing Alice to promote photos. This addition is done in an AngularJS partial, which is located in the static/partials/photo.html file.
 
+```
 <button class="button">Promote</button>
+```
+
 Similarly to the invite button, the promote button is made useful with JavaScript, but this time it is made so using an AngularJS directive while rendering the static/partials/photo.html partial for each photo that is listed on the page. The relevant JavaScript is in the static/js/directives.js file.
 
+```
 angular.module('photoHunt.directives', ['photoHunt.services'])
     .directive('photo', function(Conf, PhotoHuntApi) {
       return {
@@ -569,6 +598,8 @@ angular.module('photoHunt.directives', ['photoHunt.services'])
         }
       }
     })
+```
+
 Notice that the options provided for the promote interactive post are similar to the options that are provided for the invite interactive post. As with the invite interactive post, this time we provide a contentUrl, but its value is http://localhost:8080/photo.html?photoId=0000. The SchemaHandler behind the scenes of this HTML page also generates schema.org microdata, but this time the microdata is for the particular photo that is being requested.
 
 After these interactive posts are created and shared by Alice, Bob clicks the "Vote" button in her promotion post, while Charles clicks the "Join" button in his invitation post. Bob and Charles go to the respective call-to-action URLs that are provided in the interactive post options.
@@ -580,6 +611,7 @@ The last part of Alice's use of PhotoHunt that involves the Google+ Platform is 
 Important: App activities will not work when PhotoHunt is hosted at http://localhost:8080 because the Google crawler can only access public URLs to get microdata about the content of the activity. In the case of PhotoHunt for Python, you can deploy your app to appspot.com as a public Google App Engine app.
 In Alice's case, this is done when she uploads a new photo. The post() method of PhotosHandler, exposed as http://localhost:8080/api/photos, makes a call to add_photo_to_google_plus_activity(). This method creates an activity JSON object and sends it to the moments.insert method to write the activity to Alice's profile.
 
+```
 def add_photo_to_google_plus_activity(self, user, photo):
   """Creates an app activity in Google indicating that the given User has
   uploaded the given Photo.
@@ -600,6 +632,7 @@ def add_photo_to_google_plus_activity(self, user, photo):
   return plus.moments().insert(userId='me', collection='vault',
                                   body=activity).execute()
 Disconnecting from PhotoHunt
+```
 
 The developer policies require that apps that use the Google APIs provide the ability for users to disconnect and that apps must delete all of the data that they collect about a user from the Google+ API.
 
@@ -610,6 +643,7 @@ Deletes all of Alice's votes and photos (optional).
 Deletes the User object that represents Alice. This is done to delete all of Alice's Google information, but otherwise deleting the entire User object is not necessary in your app.
 Disconnects the app from Alice's account by revoking all of the authorization tokens that are issued to PhotoHunt for Alice. This step revokes tokens across the web, Android, and iOS clients.
 
+```
 def post(self):
   """Exposed as `POST /api/disconnect`.
 
@@ -669,6 +703,8 @@ def revoke_token(credentials):
 
   if result['status'] != '200':
     raise RevokeException
+```
+
 Reusing the pieces for other users
 
 Bob's interaction with PhotoHunt
