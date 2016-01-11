@@ -144,7 +144,7 @@ Visitors who are not signed in see the Google+ Sign-In button in the top-right o
 
 First, an HTML element is added to static/index.html that represents the sign-in button. PhotoHunt uses the standard Google+ Sign-In button rather than rendering a custom button.
 
-```
+```markup
 <span id="signin" ng-show="immediateFailed">
   <span id="myGsignin"></span>
 </span>
@@ -153,7 +153,7 @@ In the code above, the important piece is that the inner span has an ID of myGsi
 
 The following code has the simple purpose of calling gapi.signin.render(), and providing the correct callback to use when the user is actually signed in:
 
-```
+```javascript
 $scope.signIn = function(authResult) {
   $scope.$apply(function() {
     $scope.processAuth(authResult);
@@ -196,7 +196,7 @@ $scope.renderSignIn = function() {
 
 After a user is successfully signed in, a call is made to http://localhost:8080/api/connect to connect the user to the PhotoHunt server, and to retrieve and store some information about the user. This step is done in ConnectHandler, within the post() method:
 
-```
+```python
 def post(self):
   """Exposed as `POST /api/connect`.
 
@@ -226,7 +226,7 @@ def post(self):
   Returns the following JSON response representing the User that was
   connected:
 
-```
+```json
 {
     'id':0,
     'googleUserId':'',
@@ -252,7 +252,7 @@ def post(self):
        file-related errors.
   """
 
-```
+```python
   # Only connect a user that is not already connected.
   if self.session.get(self.CURRENT_USER_SESSION_KEY) is not None:
     user = self.get_user_from_session()
@@ -328,7 +328,7 @@ Over-the-air install
 
 With one line of code, you can enable the over-the-air install feature to prompt your Android users to install your Android app when they sign in to your web app. The following example highlights this parameter:
 
-```
+```javascript
 $scope.renderSignIn = function() {
   gapi.signin.render('myGsignin', {
     // ...
@@ -353,7 +353,7 @@ Her Google+ name, profile photo, and profile link are shown in the PhotoHunt int
 She automatically sees photos from the people that she chose to share with PhotoHunt, who have also chosen to share photos with Alice.
 Alice's name, profile photo, and profile link are retrieved when the /api/connect endpoint is called. This is done as part of the save_token_for_user() method.
 
-```
+```python
 def get_user_profile(credentials):
   """Return the public Google+ profile data for the given user."""
   http = httplib2.Http()
@@ -392,7 +392,7 @@ The relevant lines are those within the if user is None: block. A Google API Pyt
 
 The last step of the call to /api/connect is to fetch a list of the people that Alice chose to share with PhotoHunt from her Google+ circles. This is done by the get_and_store_friends() method.
 
-```
+```python
 def get_and_store_friends(user):
   """Query Google for the list of the user's friends that they've shared with
   our app, and then store those friends for later use.
@@ -442,7 +442,7 @@ First, a button is added to static/index.html to allow Alice to invite her frien
 
 This invite button is rendered as an interactive post button in the $scope.start function in the static/index.html file. This function runs each time that the index page is loaded:
 
-```
+```angular
 $scope.start = function() {
   $scope.renderSignIn();
   $scope.checkForHighlightedPhoto();
@@ -472,7 +472,7 @@ $scope.start = function() {
 
 You can see all of the options that are provided to the gapi.interactivepost.render() method and importantly the contentUrl property. This property is important because that is the URL where Google crawls to create a share snippet for the Google+ stream such as the title for the page and the thumbnail to use. In this case, Google is directed to crawl invite.html which renders a simple page containing the metadata for the invite interactive post. If a user browses to that URL directly, the app redirects them to the index page by setting the window.location.href property using JavaScript. When Google crawls the invite.html page for metadata to display in the interactive post, the crawler will not execute JavaScript and so will not be redirected.
 
-```
+```markup
 <!DOCTYPE html>
 <html>
 <head>
@@ -491,7 +491,7 @@ You can see all of the options that are provided to the gapi.interactivepost.ren
 
 This file is rendered as a Jinja2 template by SchemaHandler.get():
 
-```
+```Jinja
 def get(self):
   """Returns the template at templates/${request.path}.
 
