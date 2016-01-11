@@ -434,7 +434,7 @@ Interactive posts allow Alice to promote her photos that she uploads to PhotoHun
 Important: Interactive posts will not work when PhotoHunt is hosted at http://localhost:8080 because the Google crawler can only access public URLs to get microdata about the content of the post. In the case of PhotoHunt for Python, you can deploy your app to appspot.com as a public Google App Engine app.
 First, a button is added to static/index.html to allow Alice to invite her friends.
 
-```
+```html
 <button id="invite" class="button icon add primary" ng-show="themes">
   Invite your friends
 </button>
@@ -442,7 +442,7 @@ First, a button is added to static/index.html to allow Alice to invite her frien
 
 This invite button is rendered as an interactive post button in the $scope.start function in the static/index.html file. This function runs each time that the index page is loaded:
 
-```angular
+```javascript
 $scope.start = function() {
   $scope.renderSignIn();
   $scope.checkForHighlightedPhoto();
@@ -491,7 +491,7 @@ You can see all of the options that are provided to the gapi.interactivepost.ren
 
 This file is rendered as a Jinja2 template by SchemaHandler.get():
 
-```Jinja
+```python
 def get(self):
   """Returns the template at templates/${request.path}.
 
@@ -539,7 +539,7 @@ def get(self):
 
 Next, a button is added to each photo that PhotoHunt lists, allowing Alice to promote photos. This addition is done in an AngularJS partial, which is located in the static/partials/photo.html file.
 
-```
+```markup
 <button class="button">Promote</button>
 ```
 
@@ -611,7 +611,7 @@ The last part of Alice's use of PhotoHunt that involves the Google+ Platform is 
 Important: App activities will not work when PhotoHunt is hosted at http://localhost:8080 because the Google crawler can only access public URLs to get microdata about the content of the activity. In the case of PhotoHunt for Python, you can deploy your app to appspot.com as a public Google App Engine app.
 In Alice's case, this is done when she uploads a new photo. The post() method of PhotosHandler, exposed as http://localhost:8080/api/photos, makes a call to add_photo_to_google_plus_activity(). This method creates an activity JSON object and sends it to the moments.insert method to write the activity to Alice's profile.
 
-```
+```python
 def add_photo_to_google_plus_activity(self, user, photo):
   """Creates an app activity in Google indicating that the given User has
   uploaded the given Photo.
@@ -643,7 +643,7 @@ Deletes all of Alice's votes and photos (optional).
 Deletes the User object that represents Alice. This is done to delete all of Alice's Google information, but otherwise deleting the entire User object is not necessary in your app.
 Disconnects the app from Alice's account by revoking all of the authorization tokens that are issued to PhotoHunt for Alice. This step revokes tokens across the web, Android, and iOS clients.
 
-```
+```python
 def post(self):
   """Exposed as `POST /api/disconnect`.
 
